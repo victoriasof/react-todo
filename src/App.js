@@ -3,18 +3,18 @@ import Todo from './components/Todo';
 import {Component} from 'react';
 import AddTodo from './components/AddTodo';
 
-const todos = [
-  {
-    id: 1, 
-    name: "todo1",
-    completed: false
-  },
-  {
-    id: 2, 
-    name: "todo2",
-    completed: false
-  }
-];
+// const todos = [
+//   {
+//     id: 1, 
+//     name: "todo1",
+//     completed: false
+//   },
+//   {
+//     id: 2, 
+//     name: "todo2",
+//     completed: false
+//   }
+// ];
 
 class App extends Component {
 
@@ -22,7 +22,7 @@ class App extends Component {
     super(props);
     this.state = {
       name: 'Manos',
-      todos: todos
+      todos: []
     }
   }
 
@@ -56,6 +56,30 @@ class App extends Component {
     });
   }
 
+  handleAdd = (name) => {
+    this.setState(prevState => {
+      let todos = [...prevState.todos];
+      console.log(todos);
+      todos.push({
+        id: todos.length + 1,
+        title: name,
+        completed: false
+      });
+
+      return {
+        todos: todos
+      }
+    });
+  }
+
+  componentDidMount () {
+    fetch('https://jsonplaceholder.typicode.com/todos')
+    .then(res => res.json())
+    .then(data => this.setState({
+      todos: data
+    }));
+  }
+
   render(){
     return (
       <div className="App">
@@ -63,7 +87,7 @@ class App extends Component {
           <Todo todo={todo} checkboxHandler={this.handleCheckboxToggle} />
         ))}
 
-        <AddTodo />
+        <AddTodo onAdd={this.handleAdd} />
       </div>
     );
   }
